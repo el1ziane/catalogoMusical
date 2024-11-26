@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Musical</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="/css/disco.css">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Catálogo Musical</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-end mt-4">
+            <a href="/formDisco" class="btn btn-custom btn-cadastrar">Cadastrar Novo Disco</a>
+        </div>
+
+        <div class="card-header">
+            <h5>Lista de Discos</h5>
+        </div>
+
+        <div>
+            <% if (discos.length === 0) { %>
+                <p class="text-center">Nenhum disco cadastrado ainda. Adicione um disco!</p>
+            <% } else { %>
+                <div class="row">
+                    <% discos.forEach(function(disco) { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card-container">
+                                <div class="card-flip">
+                                    <div class="card front">
+                                        <% if (disco.capa) { %>
+                                            <img src="/images/<%= disco.capa %>" class="card-img-top" alt="Capa de <%= disco.titulo %>">
+                                        <% } else { %>
+                                            <div class="card-img-top text-center p-4 bg-secondary text-white">
+                                                <p>Sem Capa</p>
+                                            </div>
+                                        <% } %>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><%= disco.titulo %></h5>
+                                            <p class="card-text">Artista: <%= disco.artista_nome || 'Artista desconhecido' %></p>
+                                            <p class="card-text">
+                                                <% if (Array.isArray(disco.generos) && disco.generos.length > 0) { %>
+                                                    <% disco.generos.filter(genero => genero).forEach(genero => { %>
+                                                        <span class="badge bg-primary">#<%= genero.trim() %></span>
+                                                    <% }); %>
+                                                <% } else { %>
+                                                    <span class="badge bg-secondary">Nenhum gênero</span>
+                                                <% } %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="btn-container">
+                                        <a href="/formDiscoEdit/<%= disco.id %>" class="btn btn-sm btn-warning btn-edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-danger btn-delete" data-id="<%= disco.id %>">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card back">
+                                        <div class="card-body">
+                                            <h5>Faixas:</h5>
+                                            <ul class="list-group list-group-flush">
+                                                <% disco.faixas.forEach(function(faixa) { %>
+                                                    <li class="list-group-item"><%= faixa %></li>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const discoId = button.getAttribute('data-id');
+        const confirmation = confirm('Tem certeza de que deseja excluir este disco?');
+
+        if (!confirmation) return;
+
+        try {
+            const response = await fetch(`/excluir/${discoId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Disco excluído com sucesso!');
+                document.querySelector(`[data-id="${discoId}"]`).closest('.col-md-4').remove();
+            } else {
+                const error = await response.json();
+                alert(`Erro ao excluir: ${error.error || 'Erro desconhecido'}`);
+            }
+        } catch (err) {
+            alert('Erro ao processar sua solicitação.');
+        }
+    });
+});
+        document.querySelectorAll('.card-container').forEach(cardContainer => {
+            cardContainer.addEventListener('click', function () {
+                const cardFlip = cardContainer.querySelector('.card-flip');
+                const isFlipped = cardFlip.style.transform === 'rotateY(180deg)';
+                cardFlip.style.transform = isFlipped ? 'rotateY(0deg)' : 'rotateY(180deg)';
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Artista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/formArtista.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Catálogo Musical</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="my-4">Cadastrar Artista</h1>
+        <form action="/cadastrarArtista" method="POST">
+
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome do Artista</label>
+                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome do artista" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Gêneros</label>
+                <select name="genero_id[]" id="genero_id" class="select-custom" multiple required>
+                    <% generos.forEach(function(genero) { %>
+                        <option value="<%= genero.id %>"><%= genero.nome %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="disco" class="form-label">Selecione os Discos</label>
+                <select class="form-control select-custom" id="disco" name="disco[]" multiple required>
+                    <% discos.forEach(function(disco) { %>
+                        <option value="<%= disco.id %>"><%= disco.titulo %></option>
+                    <% }); %>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary mt-3">Cadastrar Artista</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+            const generoSelect = document.getElementById('genero_id');
+            const choices = new Choices(generoSelect, {
+            removeItemButton: true,
+            maxItemCount: 5,
+            searchEnabled: true,
+            itemSelectText: 'Clique para selecionar'
+        });
+
+        const discoSelect = document.getElementById('disco');
+const discoChoices = new Choices(discoSelect, {
+    removeItemButton: true,
+    searchEnabled: true,
+    itemSelectText: 'Clique para selecionar',
+    placeholderValue: 'Selecione discos...',
+});
+
+    </script>
+</body>
+</html>

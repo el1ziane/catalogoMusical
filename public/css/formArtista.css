@@ -1,0 +1,29 @@
+.select-custom {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    background-color: #fff;
+    width: 100%;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '\f078';
+    font-family: 'FontAwesome';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #6c757d;
+}
+
+.faixa-container {
+    margin-bottom: 10px;
+}

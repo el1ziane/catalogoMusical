@@ -1,0 +1,67 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+}
+.navbar {
+    background-color: #343a40;
+}
+.navbar a {
+    color: #fff !important;
+}
+.container {
+    margin-top: 20px;
+}
+h1 {
+    font-size: 36px;
+    color: #343a40;
+    text-align: center;
+}
+.card {
+    margin-bottom: 20px;
+}
+.card-header {
+    background-color: #343a40;
+    color: white;
+}
+.card-body {
+    background-color: #ffffff;
+}
+.btn-custom {
+    background-color: #343a40;
+    color: white;
+}
+.btn-edit, .btn-delete {
+    margin-right: 5px;
+}
+body {
+    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+}
+.navbar {
+    background-color: #343a40;
+}
+.navbar a {
+    color: #fff !important;
+}
+.container {
+    margin-top: 20px;
+}
+h1 {
+    font-size: 36px;
+    color: #343a40;
+    text-align: center;
+}
+.card {
+    margin-bottom: 20px;
+}
+.card-header {
+    background-color: #343a40;
+    color: white;
+}
+.card-body {
+    background-color: #ffffff;
+}
+.btn-custom {
+    background-color: #343a40;
+    color: white;
+}

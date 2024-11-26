@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Musical</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/genero.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Catálogo Musical</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-end mt-4">
+            <a href="/formGenero" class="btn btn-custom">Cadastrar Novo Gênero</a>
+        </div>
+
+        <!-- Listagem de Gêneros -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Lista de Gêneros</h5>
+            </div>
+            <div class="card-body">
+                <% if (generos.length === 0) { %>
+                    <p class="text-center">Nenhum gênero cadastrado ainda. Adicione um gênero!</p>
+                <% } else { %>
+                    <ul class="list-group">
+                        <% generos.forEach(function(genero) { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><%= genero.nome %></h5>
+                                </div>
+                                <div>
+                                    <a href="/formGeneroEdit/<%= genero.id %>" class="btn btn-warning btn-sm btn-edit">Editar</a>
+                                    <button class="btn btn-sm btn-danger btn-delete" data-id="<%= genero.id %>">
+                                        Excluir
+                                     </button>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Botão para Redirecionar ao Formulário de Cadastro -->
+       
+    </div>
+<script>
+          document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const generoId = button.getAttribute('data-id');
+
+        const confirmation = confirm('Tem certeza de que deseja excluir este artista?');
+        if (!confirmation) return;
+
+        try {
+            const response = await fetch(`/excluirGenero/${generoId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message);
+
+                // Remover o artista da lista no frontend
+                const generoItem = document.querySelector(`[data-id="${generoId}"]`).closest('li');
+                generoItem.remove();  // Remove o item da lista da tela
+
+                // Caso queira fazer uma atualização automática da lista de artistas sem recarregar a página
+                // Você pode buscar novamente todos os artistas do servidor e atualizar a tela
+                const generosResponse = await fetch('/generos');
+                const generos = await generosResponse.json();
+                // Aqui você atualiza a lista de artistas, pode adaptar para sua lógica de renderização
+                atualizarListaDeGeneros(generos);  // Função fictícia que pode atualizar a lista
+            } else {
+                const error = await response.json();
+                alert(`Erro ao excluir: ${error.error || 'Erro desconhecido'}`);
+            }
+        } catch (err) {
+            console.error('Erro ao excluir o artista:', err);
+          
+        }
+    });
+});
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
