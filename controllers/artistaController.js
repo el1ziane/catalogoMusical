@@ -5,17 +5,20 @@ const artistaModel = new Artista(pool);
 const getArtistas = (req, res) => {
     artistaModel.getAllArtistas()
         .then(artistas => {
+            console.log('Artistas carregados:', artistas);
             res.render('artistas', { artistas });
         })
         .catch(err => {
+            console.error('Erro ao carregar artistas:', err); 
             res.status(500).send('Erro ao carregar artistas');
         });
 };
 
+
 const getFormArtistaCriacao = async (req, res) => {
     try {
         const generos = await artistaModel.getAllGeneros();
-        const discos = await artistaModel.getAllDiscos();  
+        const discos = await artistaModel.getAllDiscos();
         res.render('formArtista', { generos, discos, artista: {} });
     } catch (err) {
         console.error('Erro ao carregar dados do formulário:', err.message);
@@ -23,29 +26,26 @@ const getFormArtistaCriacao = async (req, res) => {
     }
 };
 
-
-
 const getFormArtistaEdicao = async (req, res) => {
-    const artistaId = req.params.id;
-
     try {
-        const artista = await artistaModel.getArtistaById(artistaId);
-        if (!artista) {
-            return res.status(404).send('Artista não encontrado');
-        }
+        const artistaId = req.params.id;
+        const artista = await artistaModel.getArtistaById(artistaId); 
+        const generos = await artistaModel.getAllGeneros(); 
+        const discos = await artistaModel.getAllDiscos();
+        const generosSelecionados = artista.genero_id || [];
+        const discosSelecionados = artista.disco_id || []; 
 
-        const generos = await artistaModel.getAllGeneros();
-        const todosDiscos = await artistaModel.getAllDiscos();
-        const discosSelecionados = artista.discos.map(disco => disco.id);
-        const generosSelecionados = artista.generos ? artista.generos.map(genero => genero.id) : []; 
-
+        console.log('Artista:', artista);
+        console.log('Generos Selecionados:', generosSelecionados);
+        console.log('Discos Selecionados:', discosSelecionados);
         res.render('formArtistaEdit', {
             artista,
-            generos,
-            todosDiscos,
-            discosSelecionados,
-            generosSelecionados, 
+            generos,            
+            generosSelecionados,
+            discos,              
+            discosSelecionados  
         });
+
     } catch (err) {
         console.error('Erro ao carregar dados do formulário:', err.message);
         res.status(500).send('Erro ao carregar dados do formulário');
@@ -55,57 +55,34 @@ const getFormArtistaEdicao = async (req, res) => {
 
 
 const createArtista = async (req, res) => {
-    console.log('Dados recebidos no body:', req.body);  // Verifique se está tudo correto
     const { nome, genero_id, disco } = req.body;
-    
-    let generos = Array.isArray(genero_id) ? genero_id : [genero_id];
-    generos = generos.filter(genero_id => genero_id && typeof genero_id === 'string' && genero_id.trim() !== '');
-    
-    let discos = Array.isArray(disco) ? disco : [disco];
-    discos = discos.filter(disco => disco && typeof disco === 'string' && disco.trim() !== '');
+console.log(nome, genero_id, disco);
+console.log('Nome:', nome);
+console.log('Gêneros:', genero_id);
+console.log('Discos:', disco);
 
     try {
-        const artistaId = await artistaModel.createArtista(nome, generos, discos);
-
-        if (generos && generos.length > 0) {
-            await artistaModel.addGenerosToArtista(artistaId, generos);
-        }
-
-        if (discos && discos.length > 0) {
-            await artistaModel.addDiscosToArtista(artistaId, discos);
-        }
-
+        await artistaModel.createArtista(nome, genero_id, disco);
         res.redirect('/artistas');
     } catch (err) {
-        console.error(err);
+        console.error('Erro ao criar artista:', err.message);
         res.status(500).send('Erro ao criar artista');
     }
 };
 
-
-
-const updateArtista = (req, res) => {
+const updateArtista = async (req, res) => {
     const { id } = req.params;
-    const nome= req.body.nome;
-    const generos = req.body.genero_id;
-    const disco = req.body.disco_id;
+    const { nome, genero_id, disco_id } = req.body;
 
-    artistaModel.updateArtista(id, nome, generos, disco)
-        .then(async () => {
-            if (generos && generos.length > 0) {
-                await artistaModel.updateGenerosToArtista(id, generos);
-            }
-
-            if (disco) {
-                await artistaModel.updateDiscoToArtista(id, disco);
-            }
-
-            res.json({ success: true });
-        })
-        .catch(err => {
-            res.status(500).json({ success: false, error: err.message });
-        });
+    try {
+        await artistaModel.updateArtista(id, nome, genero_id, disco_id);
+        res.redirect('/artistas');
+    } catch (err) {
+        
+        res.status(500).send('Erro ao atualizar artista');
+    }
 };
+
 
 const deleteArtista = async (req, res) => {
     const { id } = req.params;

@@ -37,18 +37,6 @@
                 <label for="capa" class="form-label">Capa do Disco</label>
                 <input type="hidden" name="existingCapa" value="<%= disco.capa %>" />
             </div>
-
-            <div class="mb-3">
-                <label for="artista_id" class="form-label">Artista</label>
-                <select name="artista_id" id="artista_id" class="select-custom" required>
-                    <option value="" disabled>Selecione o artista</option>
-                    <% artistas.forEach(artista => { %>
-                        <option value="<%= artista.id %>" <%= artista.id === disco.artista_id ? 'selected' : '' %>>
-                            <%= artista.nome %>
-                        </option>
-                    <% }) %>
-                </select>
-            </div>
         
             <div class="mb-3">
                 <label class="form-label">Gêneros</label>
@@ -98,16 +86,38 @@
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
             event.preventDefault();
+
             const formData = new FormData(this);
             const data = {};
+
             formData.forEach((value, key) => {
-                data[key] = value;
+                if (key === 'genero_id[]') {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else if (data[key]) {
+                        data[key] = [data[key], value];
+                    } else {
+                        data[key] = [value];
+                    }
+                } else if (key === 'faixas[]') {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else if (data[key]) {
+                        data[key] = [data[key], value];
+                    } else {
+                        data[key] = [value];
+                    }
+                } else {
+                    data[key] = value;
+                }
             });
-            console.log(data); 
 
             fetch('/editarDisco/<%= disco.id %>', {
                 method: 'PUT',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
             })
             .then(response => response.json())
             .then(data => {

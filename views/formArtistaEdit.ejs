@@ -33,18 +33,20 @@
                             <%= genero.nome %>
                         </option>
                     <% }); %>
-                </select>
+                </select>      
                 
             </div>
 <div class="mb-3">
-    <label for="disco" class="form-label">Selecione o Disco</label>
-    <select class="form-control select-custom" id="disco" name="disco[]" multiple required>
-        <% todosDiscos.forEach(function(disco) { %>
-            <option value="<%= disco.id %>" <%= discosSelecionados.includes(disco.id) ? 'selected' : '' %>>
+    <label class="form-label">Selecione o Disco</label>
+    <select class="form-control select-custom" id="disco_id" name="disco_id[]" multiple required>
+        <% discos.forEach(function(disco) { %>
+            <option value="<%= disco.id %>" 
+                    <%= discosSelecionados.includes(disco.id) ? 'selected' : '' %> >
                 <%= disco.titulo %>
             </option>
         <% }); %>
     </select>
+    
     
 </div>
             <button type="submit" class="btn btn-primary mt-3">Editar Artista</button>
@@ -63,36 +65,60 @@
             itemSelectText: 'Clique para selecionar'
         });
         document.getElementById('editForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+    event.preventDefault();
 
-            const formData = new FormData(this);
-            const data = {};
+    const formData = new FormData(this);
+    const data = {};
 
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
+    formData.forEach((value, key) => {
+        if (key === 'genero_id[]') {
+            if (Array.isArray(data[key])) {
+                data[key].push(value);
+            } else if (data[key]) {
+                data[key] = [data[key], value];
+            } else {
+                data[key] = [value];
+            }
+        } else if (key === 'disco_id[]') {
+            if (Array.isArray(data[key])) {
+                data[key].push(value);
+            } else if (data[key]) {
+                data[key] = [data[key], value];
+            } else {
+                data[key] = [value];
+            }
+        } else {
+            data[key] = value;
+        }
+    });
+    if (!data['disco_id[]']) {
+        data['disco_id[]'] = [];
+    }
 
-            fetch('/editarArtista/<%= artista.id %>', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json', 
-                },
-                body: JSON.stringify(data), 
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Artista editado com sucesso!');
-                    window.location.href = '/artistas';
-                } else {
-                    alert('Erro ao editar o artista!');
-                }
-            })
-            .catch(error => {
-                alert('Ocorreu um erro. Tente novamente!');
-            });
-
-        });
+    fetch('/editarArtista/<%= artista.id %>', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            nome: data.nome,
+            genero_id: data['genero_id[]'],
+            disco_id: data['disco_id[]'], 
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Artista editado com sucesso!');
+            location.reload();
+        } else {
+            alert('Erro ao editar o artista!');
+        }
+    })
+    .catch(error => {
+        alert('Ocorreu um erro. Tente novamente!');
+    });
+});
     </script>
 </body>
 </html>

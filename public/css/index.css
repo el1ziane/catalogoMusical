@@ -2,31 +2,76 @@ body {
     background-color: #f8f9fa;
     font-family: 'Arial', sans-serif;
 }
+
 .navbar {
     background-color: #343a40;
 }
+
 .navbar a {
     color: #fff !important;
 }
+
 .container {
     margin-top: 20px;
 }
+
 h1 {
     font-size: 36px;
     color: #343a40;
     text-align: center;
 }
+
 .card {
     margin-bottom: 20px;
 }
+
 .card-header {
     background-color: #343a40;
     color: white;
 }
+
 .card-body {
     background-color: #ffffff;
 }
+
+.input-group {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#disco-list .list-group-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+}
+
+#disco-list img {
+    border-radius: 5px;
+}
+
+#disco-list h5 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
+
+#disco-list p {
+    margin: 5px 0;
+}
+
+#disco-list .list-group-item p strong {
+    font-weight: 600;
+}
+
 .btn-custom {
     background-color: #343a40;
     color: white;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+    border-color: #0056b3;
 }

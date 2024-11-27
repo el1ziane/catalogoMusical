@@ -33,8 +33,16 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h1>Bem-vindo ao Catálogo Musical</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Bem-vindo ao Catálogo Musical</h1>
+
+        <!-- Campo de busca -->
+        <div class="input-group mb-4">
+            <input type="text" class="form-control" id="search" placeholder="Buscar por título, artista ou gênero...">
+            <button class="btn btn-primary" type="button" id="searchBtn">Buscar</button>
+        </div>
+
+        <!-- Lista de discos -->
         <div class="card">
             <div class="card-header">
                 <h5>Lista de Discos Cadastrados</h5>
@@ -43,16 +51,18 @@
                 <% if (discos.length === 0) { %>
                     <p class="text-center">Nenhum disco cadastrado ainda. Adicione um disco!</p>
                 <% } else { %>
-                    <ul class="list-group">
+                    <ul class="list-group" id="disco-list">
                         <% discos.forEach(function(disco) { %>
                             <li class="list-group-item">
-                                <h5><%= disco.titulo %></h5>
-                                <p><strong>Artista:</strong> <%= disco.artista || 'Artista desconhecido' %></p>
-
-                                <p><strong>Ano:</strong> <%= disco.ano_lancamento %></p>
-                                <img src="/images/<%= disco.capa %>" alt="Capa do Disco" width="100">
-
-
+                                <div class="d-flex align-items-center">
+                                    <img src="/images/<%= disco.capa %>" alt="Capa do Disco" width="80" class="me-3">
+                                    <div>
+                                        <h5><%= disco.titulo %></h5>
+                                        <p><strong>Artista:</strong> <%= disco.artista_nome || 'Artista desconhecido' %></p>
+                                        <p><strong>Gênero:</strong> <%= disco.genero_nome || 'Gênero desconhecido' %></p>
+                                        <p><strong>Ano:</strong> <%= disco.ano_lancamento %></p>
+                                    </div>
+                                </div>
                             </li>
                         <% }); %>
                     </ul>
@@ -62,5 +72,30 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+    <script>
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const searchQuery = document.getElementById('search').value.toLowerCase();
+            const discoListItems = document.querySelectorAll('#disco-list .list-group-item');
+            
+            discoListItems.forEach(item => {
+                const titulo = item.querySelector('h5').innerText.toLowerCase();
+                const artistaElement = item.querySelector('p strong:nth-of-type(1) + p');
+                const artista = artistaElement ? artistaElement.innerText.toLowerCase() : '';
+                const generoElement = item.querySelector('p strong:nth-of-type(2) + p');
+                const genero = generoElement ? generoElement.innerText.toLowerCase() : '';
+                
+                if (titulo.includes(searchQuery) || artista.includes(searchQuery) || genero.includes(searchQuery)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    
+    
+
+
 </body>
 </html>

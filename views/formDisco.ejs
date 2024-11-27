@@ -17,8 +17,7 @@
 
     <div class="container">
         <h1 class="my-4">Cadastrar Disco</h1>
-       <form action="/cadastrarDisco" method="POST" enctype="multipart/form-data">
-
+        <form action="/cadastrarDisco" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="titulo" class="form-label">Título do Disco</label>
                 <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Digite o título do disco" required>
@@ -30,18 +29,6 @@
             <div class="mb-3">
                 <label for="capa" class="form-label">Capa do Disco</label>
                 <input type="file" class="form-control" id="capa" name="capa" accept="image/*" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="artista_id" class="form-label">Artista</label>
-                <div class="select-wrapper">
-                    <select name="artista_id" id="artista_id" class="select-custom" required>
-                        <option value="" disabled selected>Selecione o artista</option>
-                        <% artistas.forEach(artista => { %>
-                            <option value="<%= artista.id %>"><%= artista.nome %></option>
-                        <% }) %>
-                    </select>
-                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Gêneros</label>

@@ -23,9 +23,21 @@ app.use('/css', express.static(path.join(__dirname, 'css'), {
 app.use('/', discoRoutes);
 app.use('/', artistaRoutes);
 app.use('/', generoRoutes);
-
 app.get('/', (req, res) => {
-    pool.query('SELECT discos.titulo, discos.ano_lancamento, discos.capa, artistas.nome AS artista FROM discos JOIN artistas ON discos.artista_id = artistas.id', (err, result) => {
+
+    pool.query(`
+        SELECT 
+            d.titulo, 
+            d.ano_lancamento, 
+            d.capa, 
+            a.nome AS artista_nome, 
+            g.nome AS genero_nome
+        FROM discos d
+        -- Fazemos o JOIN com a tabela artistas usando o disco_id como referência
+        LEFT JOIN artistas a ON a.disco_id @> ARRAY[d.id]  -- Verifica se o disco está no array disco_id
+        -- Fazemos o JOIN com a tabela generos para trazer os gêneros do artista
+        LEFT JOIN generos g ON g.id = ANY(a.genero_id)  -- Verifica se o gênero está no array genero_id
+    `, (err, result) => {
         if (err) {
             console.error('Erro ao consultar os discos:', err.message);
             return res.status(500).send('Erro ao carregar discos');
@@ -35,6 +47,8 @@ app.get('/', (req, res) => {
         res.render('index', { discos });
     });
 });
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

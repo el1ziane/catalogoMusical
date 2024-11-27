@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-   
-   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/"> 
@@ -35,22 +33,24 @@
                                 <div>
                                     <h5><%= artista.nome %></h5>
                                     <p><strong>Gêneros:</strong> 
-                                        <% if (artista.generos.length > 0) { %>
+                                        <% if (artista.generos && artista.generos.length > 0) { %>
                                             <%= artista.generos.join(', ') %>
                                         <% } else { %>
                                             Nenhum gênero associado
                                         <% } %>
-                                    </p>
-                                    <p><strong>Discos:</strong></p>
-                                    <% if (artista.discos.length > 0) { %>
-                                        <ul>
-                                            <% artista.discos.forEach(disco => { %>
-                                                <li><%= disco.titulo %></li>
-                                            <% }); %>
-                                        </ul>
-                                    <% } else { %>
-                                        <p>Nenhum disco associado</p>
-                                    <% } %>
+                                        
+                                        <p><strong>Discos:</strong></p>
+                                        <% if (artista.discos && artista.discos.length > 0) { %>
+                                            <ul>
+                                                <% artista.discos.forEach(disco => { %>
+                                                    <li><%= disco %></li>
+                                                <% }); %>
+                                            </ul>
+                                        <% } else { %>
+                                            Nenhum disco associado
+                                        <% } %>
+                                        
+
                                 </div>
                                 <div>
                                     <a href="/formArtistaEdit/<%= artista.id %>" class="btn btn-warning btn-sm btn-edit">Editar</a>
@@ -82,8 +82,6 @@
             if (response.ok) {
                 const result = await response.json();
                 alert(result.message);
-
-                // Remover o artista da lista no frontend
                 const artistItem = document.querySelector(`[data-id="${artistaId}"]`).closest('li');
                 artistItem.remove();
                 const artistasResponse = await fetch('/artistas');
