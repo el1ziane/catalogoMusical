@@ -39,7 +39,7 @@ O banco de dados contém as seguintes tabelas:
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/catalogo-musical.git
+   git clone https://github.com/el1ziane/catalogoMusical.git
    cd catalogo-musical
 
 ## Instale as dependências:
